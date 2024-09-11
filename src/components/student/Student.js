@@ -44,7 +44,7 @@ export default function Student() {
   const [student, setStudent] = useState({
     name: "Mèo",
     city: "HCM",
-    birthday: "02-03-2020",
+    birthday: "2020-02-02",
     rating: "Gioi"
   });
   const handlePageClick = (event) => {
@@ -61,26 +61,19 @@ export default function Student() {
     .then(() => {
       dispatch(getAll({ currentPage, limit }));
     });
-    setStudent({
-        name: "Mèo",
-        city: "HCM",
-        birthday: "02-03-2020",
-        rating: "Gioi"
-      })
+    // setStudent({
+    //     name: "Mèo",
+    //     city: "HCM",
+    //     birthday: "2020-02-02",
+    //     rating: "Gioi"
+    //   })
   };
   const handle_change = (e) => {
     const { name, value } = e.target;
-    if (name === "birthday") {
-      setStudent((prevStudent) => ({
-        ...prevStudent,
-        [name]: convertDateToYYYYMMDD(value),
-      }));
-    } else {
       setStudent((prevStudent) => ({
         ...prevStudent,
         [name]: value,
       }));
-    }
   };
   const convertDateToYYYYMMDD = (date) => {
     const [day, month, year] = date.split("-");
@@ -128,14 +121,17 @@ export default function Student() {
     dispatch(
       editStudent({
         id,
-        student: {
-          ...EStudent,
-          birthday: EStudent.birthday, 
-          rating: EStudent.rating,
-        },
+        std: EStudent,
       })
     );
     setStudentEdit({ isEdit: false, id: "" });
+    setEStudent({
+      id: "",
+      name: "",
+      city: "",
+      birthday: "",
+      rating: "",
+    })
   };
   return (
     <div>
@@ -187,7 +183,7 @@ export default function Student() {
                     name="birthday"
                     placeholder="nhập vào ngày tháng năm sinh"
                     type="date"
-                    value={convertDateToYYYYMMDD(student.birthday)}
+                    value={student.birthday}
                     onChange={handle_change}
                   />
                 </FormGroup>

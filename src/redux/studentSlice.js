@@ -39,9 +39,9 @@ export const addStudent = createAsyncThunk(
 );
 export const editStudent = createAsyncThunk(
   "student/editStudent",
-  async ({id, student}, thunkAPI) => {
+  async ({id, std}, thunkAPI) => {
     try {
-      const res = await axios.put(BASE_URL + "/"+id, student);
+      const res = await axios.put(BASE_URL + "/" + id, std);
       console.log(res.data)
       return res.data;
     } catch (error) {
