@@ -18,6 +18,9 @@ import {
   editStudent,
   getAll,
   resetStatusAndMessage,
+  search,
+  searchStudent,
+  searchStudent1,
 } from "../../redux/studentSlice";
 import ReactPaginate from "react-paginate";
 import { Modal, ModalHeader, ModalFooter } from "reactstrap";
@@ -45,7 +48,7 @@ export default function Student() {
     name: "Mèo",
     city: "HCM",
     birthday: "2020-02-02",
-    rating: "Gioi"
+    rating: "Gioi",
   });
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -56,32 +59,17 @@ export default function Student() {
     });
   };
   const handle_add = () => {
-    console.log(student)
-    dispatch(addStudent(student))
-    .then(() => {
+    console.log(student);
+    dispatch(addStudent(student)).then(() => {
       dispatch(getAll({ currentPage, limit }));
     });
-    // setStudent({
-    //     name: "Mèo",
-    //     city: "HCM",
-    //     birthday: "2020-02-02",
-    //     rating: "Gioi"
-    //   })
   };
   const handle_change = (e) => {
     const { name, value } = e.target;
-      setStudent((prevStudent) => ({
-        ...prevStudent,
-        [name]: value,
-      }));
-  };
-  const convertDateToYYYYMMDD = (date) => {
-    const [day, month, year] = date.split("-");
-    return `${year}-${month}-${day}`;
-  };
-  const convertDateToDDMMYYYY = (date) => {
-    const [year, month, day] = date.split("-");
-    return `${day}-${month}-${year}`;
+    setStudent((prevStudent) => ({
+      ...prevStudent,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
@@ -131,8 +119,37 @@ export default function Student() {
       city: "",
       birthday: "",
       rating: "",
-    })
+    });
   };
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredStudents =
+    students &&
+    students.filter((student) =>
+      student.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+  const handle_search_api1 = () => {
+    dispatch(searchStudent(searchTerm));
+  };
+  const [startYear, setStartYear] = useState("");
+  const [endYear, setEndYear] = useState("");
+  const handle_search_api2 = () => {
+    if (startYear && endYear) {
+      dispatch(searchStudent1({ startYear, endYear }));
+    }
+  };
+
+  const [name1, setName1] = useState("")
+  const [city1, setCity1] = useState("")
+  const [rating1, SetRating1] = useState("Gioi")
+  const [startYear1, setStartYear1] = useState(null);
+  const [endYear1, setEndYear1] = useState(null);
+  const handle_search_All = () =>{
+    if (startYear1 && endYear1) {
+      dispatch(search({rating: rating1,name: name1,city: city1,startYear:startYear1,endYear: endYear1}))
+    }
+  }
   return (
     <div>
       <Container>
@@ -141,6 +158,77 @@ export default function Student() {
           <Button color="success" onClick={toggle}>
             Add new student
           </Button>
+          <Input
+            type="text"
+            placeholder="Search API"
+            className="my-3"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handle_search_api1();
+              }
+            }}
+          />
+          <div className="d-flex">
+            <Input
+              type="text"
+              placeholder="nhap vao nam bat dau"
+              value={startYear}
+              onChange={(e) => setStartYear(e.target.value)}
+            />
+            <Input
+              type="text"
+              placeholder="nhap vao nam ket thuc"
+              value={endYear}
+              onChange={(e) => setEndYear(e.target.value)}
+            />
+            <Button onClick={handle_search_api2}>Search</Button>
+          </div>
+          <div className="searchAll">
+            <Input
+              type="text"
+              placeholder="Nhap vao ho ten"
+              className="my-3"
+              value={name1}
+              onChange={(e) => setName1(e.target.value)}
+            />
+            <div className="d-flex my-3">
+              <Input
+                type="text"
+                placeholder="nhap vao thanh pho"
+                value={city1}
+                onChange={(e) => setCity1(e.target.value)}
+              />
+              <Input
+                    id="rating"
+                    name="rating"
+                    type="select"
+                    value={rating1}
+                    onChange={(e)=>SetRating1(e.target.value)}
+                  >
+                    <option>Gioi</option>
+                    <option>Kha</option>
+                    <option>Tb</option>
+                    <option>Yeu</option>
+                  </Input>
+            </div>
+            <div className="d-flex my-3">
+              <Input
+                type="text"
+                placeholder="nhap vao nam bat dau"
+                value={startYear1}
+                onChange={(e) => setStartYear1(e.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="nhap vao nam ket thuc"
+                value={endYear1}
+                onChange={(e) => setEndYear1(e.target.value)}
+              />
+            </div>
+            <Button onClick={handle_search_All}>Search</Button>
+          </div>
           <Modal isOpen={modal} toggle={toggle}>
             {error && (
               <Alert color="danger">
@@ -275,7 +363,7 @@ export default function Student() {
                         name="birthday"
                         value={EStudent.birthday}
                         onChange={(e) =>
-                          setEStudent({ ...EStudent, birthday: e.target.value})
+                          setEStudent({ ...EStudent, birthday: e.target.value })
                         }
                       />
                     ) : (
@@ -328,7 +416,7 @@ export default function Student() {
                         </Button>
                         <Button
                           className="btn btn-warning mx-2"
-                          onClick={() => handle_edit(item.id,item)}
+                          onClick={() => handle_edit(item.id, item)}
                         >
                           Edit{" "}
                         </Button>

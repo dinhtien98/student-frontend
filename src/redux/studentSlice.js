@@ -29,8 +29,8 @@ export const addStudent = createAsyncThunk(
   "student/addStudent",
   async (student, thunkAPI) => {
     try {
-      const res = await axios.post(BASE_URL, student);
-      return res.data;
+      const response = await axios.post(BASE_URL, student);
+      return response.data;
   
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -41,14 +41,40 @@ export const editStudent = createAsyncThunk(
   "student/editStudent",
   async ({id, std}, thunkAPI) => {
     try {
-      const res = await axios.put(BASE_URL + "/" + id, std);
-      console.log(res.data)
-      return res.data;
+      const response = await axios.put(BASE_URL + "/" + id, std);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
+export const searchStudent=createAsyncThunk("student/searchStudent", async(searchTerm,thunkAPI)=>{
+  try {
+    const response = await axios.get(BASE_URL+`/search?name=${searchTerm}`)
+    return response.data
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+})
+
+export const searchStudent1=createAsyncThunk("student/searchStudent1", async({startYear,endYear},thunkAPI)=>{
+  try {
+    const response = await axios.get(BASE_URL+`/search1?startYear=${startYear}&endYear=${endYear}`)
+    return response.data
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+})
+
+export const search=createAsyncThunk("student/search", async({rating, name, city, startYear,endYear}, thunkAPI)=>{
+  try {
+    const response = await axios.get(BASE_URL+`/search2?rating=${rating}&name=${name}&city=${city}&startYear=${startYear}&endYear=${endYear}`)
+    return response.data
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+})
+
 const studentSlice = createSlice({
   name: "student",
   initialState: {
@@ -107,7 +133,35 @@ const studentSlice = createSlice({
         state.status = action.payload.status;
         state.message = action.payload.message;
         state.error = action.payload.data;
-      });
+      })
+      .addCase(searchStudent.fulfilled,(state, action)=>{
+        state.students = action.payload.data;
+        state.status = action.payload.status;
+      })
+      .addCase(searchStudent.rejected,(state,action)=>{
+        state.status = action.payload.status;
+        state.message = action.payload.message;
+        state.error = action.payload.data;
+      })
+      .addCase(searchStudent1.fulfilled,(state, action)=>{
+        state.students = action.payload.data;
+        state.status = action.payload.status;
+      })
+      .addCase(searchStudent1.rejected,(state,action)=>{
+        state.status = action.payload.status;
+        state.message = action.payload.message;
+        state.error = action.payload.data;
+      })
+      .addCase(search.fulfilled,(state,action)=>{
+        state.students = action.payload.data;
+        state.status = action.payload.status;
+      })
+      .addCase(search.rejected,(state,action)=>{
+        state.status = action.payload.status;
+        state.message = action.payload.message;
+        state.error = action.payload.data;
+      })
+      ;
   },
 });
 
