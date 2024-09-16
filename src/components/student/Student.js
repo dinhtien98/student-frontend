@@ -25,6 +25,7 @@ import {
 import ReactPaginate from "react-paginate";
 import { Modal, ModalHeader, ModalFooter } from "reactstrap";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 export default function Student() {
   const [showMessage, setShowMessage] = useState(false);
@@ -140,16 +141,24 @@ export default function Student() {
     }
   };
 
-  const [name1, setName1] = useState("")
-  const [city1, setCity1] = useState("")
-  const [rating1, SetRating1] = useState("Gioi")
+  const [name1, setName1] = useState("");
+  const [city1, setCity1] = useState("");
+  const [rating1, SetRating1] = useState("Gioi");
   const [startYear1, setStartYear1] = useState(null);
   const [endYear1, setEndYear1] = useState(null);
-  const handle_search_All = () =>{
+  const handle_search_All = () => {
     if (startYear1 && endYear1) {
-      dispatch(search({rating: rating1,name: name1,city: city1,startYear:startYear1,endYear: endYear1}))
+      dispatch(
+        search({
+          rating: rating1,
+          name: name1,
+          city: city1,
+          startYear: startYear1,
+          endYear: endYear1,
+        })
+      );
     }
-  }
+  };
   return (
     <div>
       <Container>
@@ -201,17 +210,17 @@ export default function Student() {
                 onChange={(e) => setCity1(e.target.value)}
               />
               <Input
-                    id="rating"
-                    name="rating"
-                    type="select"
-                    value={rating1}
-                    onChange={(e)=>SetRating1(e.target.value)}
-                  >
-                    <option>Gioi</option>
-                    <option>Kha</option>
-                    <option>Tb</option>
-                    <option>Yeu</option>
-                  </Input>
+                id="rating"
+                name="rating"
+                type="select"
+                value={rating1}
+                onChange={(e) => SetRating1(e.target.value)}
+              >
+                <option>Gioi</option>
+                <option>Kha</option>
+                <option>Tb</option>
+                <option>Yeu</option>
+              </Input>
             </div>
             <div className="d-flex my-3">
               <Input
@@ -419,6 +428,14 @@ export default function Student() {
                           onClick={() => handle_edit(item.id, item)}
                         >
                           Edit{" "}
+                        </Button>
+                        <Button className="btn btn-warning mx-2">
+                          <Link
+                            className="nav-link"
+                            to={`/student-detail/${item.id}`}
+                          >
+                            Detail
+                          </Link>
                         </Button>
                       </>
                     )}
